@@ -67,12 +67,13 @@ class _Home extends State<Home> with SingleTickerProviderStateMixin {
         .post('/recommend_api/v1/article/recommend_all_feed', data: data);
     print('数据${_data.data['data']}');
     List list = _data.data['data'];
-    list = list.removeAt(0);
+    // List _list = list.removeAt(0);
     for (var i = 0; i < list.length - 1; i++) {
       var item = Data.fromJson(list[i]);
       var itemInfo = item.item_info;
-      var _item = {...itemInfo};
-      print('元素${_item}');
+      var info = Data.fromJson(itemInfo);
+      // var _item = {...itemInfo};
+      print('元素${itemInfo}');
     }
   }
 

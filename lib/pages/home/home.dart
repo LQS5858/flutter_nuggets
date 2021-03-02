@@ -19,7 +19,12 @@ class _Home extends State<Home> with SingleTickerProviderStateMixin {
     Tab(text: '人工智能'),
     Tab(text: '开发工具'),
   ];
+  List detailList = [];
   List navTwo = <Widget>[Tab(text: '热门'), Tab(text: '最新'), Tab(text: '热榜')];
+  var iconType = 0xe601;
+  int activeIconIndex = -1;
+  List likeList = [];
+
   @override
   void initState() {
     super.initState();
@@ -27,7 +32,17 @@ class _Home extends State<Home> with SingleTickerProviderStateMixin {
     this.getPopular();
   }
 
+  int getIcon(index) {
+    if (activeIconIndex == index) return 0xe60c;
+    return 0xe601;
+  }
+
   Widget _renderRow(BuildContext context, int index) {
+    var item = Data.fromJson(detailList[index]);
+    var user_name = item.item_info.author_user_info?.user_name ?? '--';
+    var title = item.item_info.article_info?.title ?? '--';
+    var digg_count = item.item_info.article_info?.digg_count ?? '--';
+    var comment_count = item.item_info.article_info?.comment_count ?? '--';
     return Container(
       padding: const EdgeInsets.only(top: 18, bottom: 18, left: 24, right: 24),
       child: Column(
@@ -35,14 +50,54 @@ class _Home extends State<Home> with SingleTickerProviderStateMixin {
         children: [
           Container(
             child: Text(
-              '掘金',
+              user_name,
               style: TextStyle(color: Color(0xffb2bac2)),
             ),
           ),
           Container(
               margin: const EdgeInsets.only(top: 6, bottom: 12),
-              child: Text('中间')),
-          Container(child: Text('底部'))
+              child: Text(title)),
+          Row(
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  border: Border.all(color: Color(0xffedeeef), width: 0.5),
+                  borderRadius: BorderRadius.circular(2),
+                ),
+                height: 22.0,
+                child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        margin: const EdgeInsets.only(left: 15),
+                        child: InkWell(
+                          child: Icon(
+                            IconData(getIcon(index), fontFamily: 'iconfont'),
+                            size: 16.0,
+                          ),
+                          onTap: () {
+                            setState(() {
+                              activeIconIndex = index;
+                            });
+                          },
+                        ),
+                      ),
+                      Container(
+                          margin: const EdgeInsets.only(left: 5.0, right: 15),
+                          child: Text(digg_count.toString()))
+                    ]),
+              ),
+              Container(
+                decoration: BoxDecoration(
+                  border: Border.all(color: Color(0xffedeeef), width: 0.5),
+                  borderRadius: BorderRadius.circular(2),
+                ),
+                height: 22.0,
+                width: 55,
+              )
+            ],
+          )
         ],
       ),
     );
@@ -67,14 +122,10 @@ class _Home extends State<Home> with SingleTickerProviderStateMixin {
         .post('/recommend_api/v1/article/recommend_all_feed', data: data);
     print('数据${_data.data['data']}');
     List list = _data.data['data'];
-    // List _list = list.removeAt(0);
-    for (var i = 0; i < list.length - 1; i++) {
-      var item = Data.fromJson(list[i]);
-      var itemInfo = item.item_info;
-      var info = Data.fromJson(itemInfo);
-      // var _item = {...itemInfo};
-      print('元素${itemInfo}');
-    }
+    list.removeAt(0);
+    setState(() {
+      detailList = list;
+    });
   }
 
 //当整个页面dispose时，记得把控制器也dispose掉，释放内存
@@ -149,7 +200,7 @@ class _Home extends State<Home> with SingleTickerProviderStateMixin {
                 onRefresh: _onRefresh,
                 child: ListView.separated(
                     itemBuilder: _renderRow,
-                    itemCount: 8,
+                    itemCount: detailList.length,
                     separatorBuilder: (BuildContext context, int index) =>
                         Divider(height: 1.0, color: Color(0xffb2bac2))),
               ),

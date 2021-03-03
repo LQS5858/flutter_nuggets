@@ -89,3 +89,7 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+
+
+
+  #命令生成json序列化flutter pub run build_runner build

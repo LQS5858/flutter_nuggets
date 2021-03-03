@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_web/api/http.dart';
 import 'package:flutter_web/model/popular.dart';
+import 'package:flutter_web/model/backend.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -9,9 +10,9 @@ class Home extends StatefulWidget {
 
 class _Home extends State<Home> with SingleTickerProviderStateMixin {
   TabController _tabController;
+  ScrollController _scrollController = ScrollController();
   List nav = <Widget>[
     Tab(text: '推荐'),
-    Tab(text: '关注'),
     Tab(text: '前端'),
     Tab(text: '后端'),
     Tab(text: 'Android'),
@@ -23,13 +24,44 @@ class _Home extends State<Home> with SingleTickerProviderStateMixin {
   List navTwo = <Widget>[Tab(text: '热门'), Tab(text: '最新'), Tab(text: '热榜')];
   var iconType = 0xe601;
   int activeIconIndex = -1;
+  String cursor = '0';
   List likeList = [];
+  var initialIndex = 0;
+  var activeTabBarIndex = 0;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(vsync: this, length: 6);
-    this.getPopular();
+    getData();
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels ==
+          _scrollController.position.maxScrollExtent) {
+        print('滑到了最底部');
+        getMore();
+      }
+    });
+    activeTabBarIndex = initialIndex;
+  }
+
+  void getData() {
+    switch (activeTabBarIndex) {
+      case 0:
+        getPopular();
+        break;
+      case 1:
+        getBackEnd();
+        break;
+      case 2:
+        getBackEnd();
+        break;
+      default:
+    }
+  }
+
+  void getMore() {
+    cursor = 'eyJ2IjoiNjkzNTIyNjYxNDAyMDA0Njg3OCIsImkiOjQwfQ';
+    getData();
   }
 
   int getIcon(index) {
@@ -38,11 +70,25 @@ class _Home extends State<Home> with SingleTickerProviderStateMixin {
   }
 
   Widget _renderRow(BuildContext context, int index) {
-    var item = Data.fromJson(detailList[index]);
-    var user_name = item.item_info.author_user_info?.user_name ?? '--';
-    var title = item.item_info.article_info?.title ?? '--';
-    var digg_count = item.item_info.article_info?.digg_count ?? '--';
-    var comment_count = item.item_info.article_info?.comment_count ?? '--';
+    var user_name = null;
+    var title = null;
+    var digg_count = null;
+    var comment_count = null;
+    if (detailList.length == 0) return null;
+    if (activeTabBarIndex == 0) {
+      var item = Data.fromJson(detailList[index]);
+      user_name = item.item_info?.author_user_info?.user_name ?? '--';
+      title = item.item_info?.article_info?.title ?? '--';
+      digg_count = item.item_info?.article_info?.digg_count ?? '--';
+      comment_count = item.item_info?.article_info?.comment_count ?? '--';
+    } else {
+      var item = BackData.fromJson(detailList[index]);
+      user_name = item?.author_user_info?.user_name ?? '--';
+      title = item?.article_info?.title ?? '--';
+      digg_count = item?.article_info?.digg_count ?? '--';
+      comment_count = item?.article_info?.comment_count ?? '--';
+    }
+
     return Container(
       padding: const EdgeInsets.only(top: 18, bottom: 18, left: 24, right: 24),
       child: Column(
@@ -93,6 +139,12 @@ class _Home extends State<Home> with SingleTickerProviderStateMixin {
                   border: Border.all(color: Color(0xffedeeef), width: 0.5),
                   borderRadius: BorderRadius.circular(2),
                 ),
+                child: Center(
+                  child: Icon(
+                    IconData(0xe764, fontFamily: 'iconfont'),
+                    size: 16,
+                  ),
+                ),
                 height: 22.0,
                 width: 55,
               )
@@ -106,21 +158,72 @@ class _Home extends State<Home> with SingleTickerProviderStateMixin {
   Future<Null> _onRefresh() async {
     await Future.delayed(Duration(seconds: 2), () {
       print('refresh');
+      getData();
+    });
+  }
+
+  List tabBarViewItem() {
+    List arr = <Widget>[];
+    for (var i = 0; i < nav.length; i++) {
+      arr.add(RefreshIndicator(
+        onRefresh: _onRefresh,
+        color: Color(0xff007fff),
+        child: ListView.separated(
+            itemBuilder: _renderRow,
+            itemCount: detailList.length,
+            controller: _scrollController,
+            separatorBuilder: (BuildContext context, int index) =>
+                Divider(height: 1.0, color: Color(0xffb2bac2))),
+      ));
+    }
+    return arr;
+  }
+
+  void getBackEnd() async {
+    Map data = {};
+    switch (activeTabBarIndex) {
+      case 1:
+        data = {
+          "id_type": 2,
+          "sort_type": 200,
+          "cate_id": "6809637767543259144",
+          "cursor": "0",
+          "limit": 20
+        };
+        break;
+      case 2:
+        data = {
+          "id_type": 2,
+          "sort_type": 200,
+          "cate_id": "6809637769959178254",
+          "cursor": "0",
+          "limit": 20
+        };
+        break;
+    }
+    print('获取backend入参数${data}');
+    var _data = await $http()
+        .dio
+        .post('/recommend_api/v1/article/recommend_cate_feed', data: data);
+    List list = _data.data['data'];
+    print('backend数据>>>${list}');
+    setState(() {
+      detailList = list;
     });
   }
 
   void getPopular() async {
     Map data = {
       "client_type": 2608,
-      "cursor": "0",
+      "cursor": cursor,
       "id_type": 2,
       "limit": 20,
       "sort_type": 200
     };
+    print('发起接口请求>>>${data}');
     var _data = await $http()
         .dio
         .post('/recommend_api/v1/article/recommend_all_feed', data: data);
-    print('数据${_data.data['data']}');
     List list = _data.data['data'];
     list.removeAt(0);
     setState(() {
@@ -132,6 +235,7 @@ class _Home extends State<Home> with SingleTickerProviderStateMixin {
   @override
   void dispose() {
     _tabController.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -139,6 +243,7 @@ class _Home extends State<Home> with SingleTickerProviderStateMixin {
   Widget build(BuildContext context) {
     return DefaultTabController(
         length: this.nav.length,
+        initialIndex: initialIndex,
         child: Scaffold(
           appBar: AppBar(
               title: Container(
@@ -146,7 +251,11 @@ class _Home extends State<Home> with SingleTickerProviderStateMixin {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround, //水平居中对齐
                     children: <Widget>[
-                      Text('首页'),
+                      Text(
+                        '首页',
+                        style:
+                            TextStyle(color: Color(0xff007fff), fontSize: 16),
+                      ),
                       Container(
                           width: 122.0,
                           child: TextField(
@@ -193,25 +302,32 @@ class _Home extends State<Home> with SingleTickerProviderStateMixin {
                 labelColor: Color(0xff007fff),
                 isScrollable: true,
                 tabs: this.nav,
+                onTap: (int index) {
+                  print('点击的tabar${index}');
+                  activeTabBarIndex = index;
+                  getData();
+                },
               )),
           body: TabBarView(
-            children: [
-              RefreshIndicator(
-                onRefresh: _onRefresh,
-                child: ListView.separated(
-                    itemBuilder: _renderRow,
-                    itemCount: detailList.length,
-                    separatorBuilder: (BuildContext context, int index) =>
-                        Divider(height: 1.0, color: Color(0xffb2bac2))),
-              ),
-              Text('测试'),
-              Text('测试'),
-              Text('测试'),
-              Text('测试'),
-              Text('测试'),
-              Text('测试'),
-              Text('测试')
-            ],
+            children: tabBarViewItem(),
+            // children: [
+            //   RefreshIndicator(
+            //     onRefresh: _onRefresh,
+            //     color: Color(0xff007fff),
+            //     child: ListView.separated(
+            //         itemBuilder: _renderRow,
+            //         itemCount: detailList.length,
+            //         controller: _scrollController,
+            //         separatorBuilder: (BuildContext context, int index) =>
+            //             Divider(height: 1.0, color: Color(0xffb2bac2))),
+            //   ),
+            //   Text('测试'),
+            //   Text('测试'),
+            //   Text('测试'),
+            //   Text('测试'),
+            //   Text('测试'),
+            //   Text('测试')
+            // ],
           ),
         ));
   }

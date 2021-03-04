@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'dart:convert';
+import 'package:connectivity/connectivity.dart';
 
 class $http {
   final Dio dio = Dio();
@@ -16,6 +17,7 @@ class $http {
         // options.headers['token'] = null;
         return options;
       }, onResponse: (Response response) {
+        response.data['test'] = '9';
         return response.data;
       }, onError: (DioError error) {
         print('>>>httpError,${error}');

@@ -50,10 +50,14 @@ class _Home extends State<Home> with SingleTickerProviderStateMixin {
         getPopular();
         break;
       case 1:
-        getBackEnd();
+        Future.delayed(Duration(seconds: 1), () {
+          getBackEnd();
+        });
         break;
       case 2:
-        getBackEnd();
+        Future.delayed(Duration(seconds: 1), () {
+          getBackEnd();
+        });
         break;
       default:
     }
@@ -169,6 +173,7 @@ class _Home extends State<Home> with SingleTickerProviderStateMixin {
         onRefresh: _onRefresh,
         color: Color(0xff007fff),
         child: ListView.separated(
+            key: ObjectKey(i),
             itemBuilder: _renderRow,
             itemCount: detailList.length,
             controller: _scrollController,
@@ -206,7 +211,7 @@ class _Home extends State<Home> with SingleTickerProviderStateMixin {
         .dio
         .post('/recommend_api/v1/article/recommend_cate_feed', data: data);
     List list = _data.data['data'];
-    print('backend数据>>>${list}');
+    print('backend数据${_data.data['test']}');
     setState(() {
       detailList = list;
     });
@@ -305,6 +310,9 @@ class _Home extends State<Home> with SingleTickerProviderStateMixin {
                 onTap: (int index) {
                   print('点击的tabar${index}');
                   activeTabBarIndex = index;
+                  setState(() {
+                    detailList = [];
+                  });
                   getData();
                 },
               )),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_web/api/http.dart';
-import 'package:flutter_web/model/popular.dart';
-import 'package:flutter_web/model/backend.dart';
+import 'package:flutter_nuggets/api/http.dart';
+import 'package:flutter_nuggets/model/popular.dart';
+import 'package:flutter_nuggets/model/backend.dart';
 
 class Home extends StatefulWidget {
   @override

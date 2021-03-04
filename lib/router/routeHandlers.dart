@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_web/pages/splash/splash.dart';
-import 'package:flutter_web/pages/demo/demo.dart';
-import 'package:flutter_web/pages/home/home.dart';
-import 'package:flutter_web/pages/demo/receiveParams.dart';
+import 'package:flutter_nuggets/pages/splash/splash.dart';
+import 'package:flutter_nuggets/pages/demo/demo.dart';
+import 'package:flutter_nuggets/pages/home/home.dart';
+import 'package:flutter_nuggets/pages/demo/receiveParams.dart';
 
 import 'package:fluro/fluro.dart';
 
@@ -20,6 +20,5 @@ Handler demoHandler = Handler(
 });
 Handler receiveHandler = Handler(
     handlerFunc: (BuildContext context, Map<String, List<String>> params) {
-      
   return ReceiveParams(params);
 });

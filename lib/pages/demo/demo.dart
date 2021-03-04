@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_web/router/application.dart';
+import 'package:flutter_nuggets/router/application.dart';
 
 class Demo extends StatefulWidget {
   @override
@@ -20,7 +20,6 @@ class _Demo extends State<Demo> {
             )
           ],
         ),
-        
       ),
     );
   }

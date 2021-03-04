@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_web/pages/home/home.dart';
+import 'package:flutter_nuggets/pages/home/home.dart';
 import 'dart:async';
 
 class Splash extends StatefulWidget {

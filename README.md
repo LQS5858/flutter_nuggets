@@ -1,4 +1,4 @@
-# flutter_web
+# flutter_nuggets
 
 A new Flutter project.
 

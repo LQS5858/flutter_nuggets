@@ -1,4 +1,4 @@
-package com.example.flutter_web
+package com.example.flutter_nuggets
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'dart:convert';
-import 'package:connectivity/connectivity.dart';
 
 class $http {
   final Dio dio = Dio();

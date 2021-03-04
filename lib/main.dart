@@ -1,12 +1,12 @@
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_web/store/baseStore.dart';
+import 'package:flutter_nuggets/store/baseStore.dart';
 import 'package:fluro/fluro.dart';
-import 'package:flutter_web/router/application.dart';
-import 'package:flutter_web/router/router.dart';
-import 'package:flutter_web/pages/home/home.dart';
-import 'package:flutter_web/pages/demo/demo.dart';
+import 'package:flutter_nuggets/router/application.dart';
+import 'package:flutter_nuggets/router/router.dart';
+import 'package:flutter_nuggets/pages/home/home.dart';
+import 'package:flutter_nuggets/pages/demo/demo.dart';
 
 void main() {
   // 修改系统栏颜色

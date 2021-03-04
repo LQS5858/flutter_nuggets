@@ -254,6 +254,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.2.0"
+  http:
+    dependency: transitive
+    description:
+      name: http
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.12.2"
   http_multi_server:
     dependency: transitive
     description:
@@ -506,6 +513,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.7.9"
+  shelf_proxy:
+    dependency: "direct dev"
+    description:
+      name: shelf_proxy
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.1.0+7"
   shelf_web_socket:
     dependency: transitive
     description:

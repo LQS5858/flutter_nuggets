@@ -7,6 +7,8 @@ import 'package:flutter_nuggets/router/application.dart';
 import 'package:flutter_nuggets/router/router.dart';
 import 'package:flutter_nuggets/pages/home/home.dart';
 import 'package:flutter_nuggets/pages/demo/demo.dart';
+import 'package:flutter_nuggets/pages/demo/mobx.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 void main() {
   // 修改系统栏颜色
@@ -36,6 +38,7 @@ class MyApp extends StatelessWidget {
           scaffoldBackgroundColor: Color(0xffffffff)),
       home: Home(),
       onGenerateRoute: $Router.router.generator,
+      builder: EasyLoading.init(),
     );
   }
 }

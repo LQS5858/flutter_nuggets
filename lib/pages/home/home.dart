@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_nuggets/api/http.dart';
 import 'package:flutter_nuggets/model/popular.dart';
 import 'package:flutter_nuggets/model/backend.dart';
+import 'package:flutter_nuggets/utils/platform.dart';
+import 'package:flutter_nuggets/store/baseStore.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_nuggets/components/com/publicLoading.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -28,6 +32,8 @@ class _Home extends State<Home> with SingleTickerProviderStateMixin {
   List likeList = [];
   var initialIndex = 0;
   var activeTabBarIndex = 0;
+  var loadingStatus = 'nomal';
+  BaseStore baseStore = BaseStore();
 
   @override
   void initState() {
@@ -42,6 +48,11 @@ class _Home extends State<Home> with SingleTickerProviderStateMixin {
       }
     });
     activeTabBarIndex = initialIndex;
+    // 全局loading
+    EasyLoading.show(status: 'loading...');
+    Future.delayed(Duration(seconds: 2), () {
+      EasyLoading.dismiss();
+    });
   }
 
   void getData() {
@@ -214,6 +225,7 @@ class _Home extends State<Home> with SingleTickerProviderStateMixin {
     print('backend数据${_data.data['test']}');
     setState(() {
       detailList = list;
+      loadingStatus = _data.data['netStatus'];
     });
   }
 
@@ -233,6 +245,7 @@ class _Home extends State<Home> with SingleTickerProviderStateMixin {
     list.removeAt(0);
     setState(() {
       detailList = list;
+      loadingStatus = _data.data['netStatus'];
     });
   }
 
@@ -316,27 +329,11 @@ class _Home extends State<Home> with SingleTickerProviderStateMixin {
                   getData();
                 },
               )),
-          body: TabBarView(
-            children: tabBarViewItem(),
-            // children: [
-            //   RefreshIndicator(
-            //     onRefresh: _onRefresh,
-            //     color: Color(0xff007fff),
-            //     child: ListView.separated(
-            //         itemBuilder: _renderRow,
-            //         itemCount: detailList.length,
-            //         controller: _scrollController,
-            //         separatorBuilder: (BuildContext context, int index) =>
-            //             Divider(height: 1.0, color: Color(0xffb2bac2))),
-            //   ),
-            //   Text('测试'),
-            //   Text('测试'),
-            //   Text('测试'),
-            //   Text('测试'),
-            //   Text('测试'),
-            //   Text('测试')
-            // ],
-          ),
+          body: PublicLoading(
+              loadingStatus: loadingStatus,
+              children: TabBarView(
+                children: tabBarViewItem(),
+              )),
         ));
   }
 }

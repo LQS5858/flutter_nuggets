@@ -24,6 +24,21 @@ mixin _$BaseStore on _BaseStore, Store {
     });
   }
 
+  final _$netStatusAtom = Atom(name: '_BaseStore.netStatus');
+
+  @override
+  String get netStatus {
+    _$netStatusAtom.reportRead();
+    return super.netStatus;
+  }
+
+  @override
+  set netStatus(String value) {
+    _$netStatusAtom.reportWrite(value, super.netStatus, () {
+      super.netStatus = value;
+    });
+  }
+
   final _$_BaseStoreActionController = ActionController(name: '_BaseStore');
 
   @override
@@ -40,7 +55,8 @@ mixin _$BaseStore on _BaseStore, Store {
   @override
   String toString() {
     return '''
-count: ${count}
+count: ${count},
+netStatus: ${netStatus}
     ''';
   }
 }

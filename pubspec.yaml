@@ -25,11 +25,14 @@ dependencies:
     sdk: flutter
   mobx: ^1.2.1+4
   flutter_mobx: ^1.1.0+2
+  flutter_easyloading: ^2.2.2
+  flutter_spinkit: ^4.1.2+1
   fluro: ^1.7.8
   flutter_svg: ^0.18.1
   shared_preferences: ^0.5.12+4
   url_launcher: ^5.7.10
   provider: ^4.3.3
+  connectivity: ^3.0.2
   dio: ^3.0.10
   json_annotation: ^3.1.1
 
@@ -93,4 +96,10 @@ flutter:
 
 
 
-  #命令生成json序列化flutter pub run build_runner build
+  #命令生成json序列化 flutter pub run build_runner build
+  #flutter packages pub run build_runner watch  // 文件更改自动打包
+#flutter packages pub run build_runner watch --delete-conflicting-outputs  // 删除旧文件在打包
+
+
+#  open -n /Applications/Google\ Chrome.app/ --args --disable-web-security  --user-data-dir=/Users/lqs/Desktop/chormconfig
+

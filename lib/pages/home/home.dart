@@ -218,6 +218,9 @@ class _Home extends State<Home> with SingleTickerProviderStateMixin {
         break;
     }
     print('获取backend入参数${data}');
+    setState(() {
+      loadingStatus = 'loading';
+    });
     var _data = await $http()
         .dio
         .post('/recommend_api/v1/article/recommend_cate_feed', data: data);
@@ -238,6 +241,9 @@ class _Home extends State<Home> with SingleTickerProviderStateMixin {
       "sort_type": 200
     };
     print('发起接口请求>>>${data}');
+    setState(() {
+      loadingStatus = 'loading';
+    });
     var _data = await $http()
         .dio
         .post('/recommend_api/v1/article/recommend_all_feed', data: data);

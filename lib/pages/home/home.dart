@@ -279,8 +279,15 @@ class _Home extends State<Home> with SingleTickerProviderStateMixin {
                           child: TextField(
                             decoration: InputDecoration(
                               isCollapsed: true,
-                              contentPadding:
-                                  const EdgeInsets.symmetric(vertical: 8.0),
+                              fillColor:
+                                  Color(0xfffafafb), //背景颜色，必须结合filled: true,才有效
+                              filled: true,
+                              labelText: '搜索',
+                              labelStyle: TextStyle(
+                                  fontSize: 10.0, color: Color(0xff666666)),
+                              contentPadding: const EdgeInsets.symmetric(
+                                  vertical: 8.0, horizontal: 8.0),
+
                               enabledBorder: OutlineInputBorder(
                                 /*边角*/
                                 borderRadius: BorderRadius.all(

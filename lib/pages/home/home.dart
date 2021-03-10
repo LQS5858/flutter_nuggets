@@ -34,6 +34,8 @@ class _Home extends State<Home> with SingleTickerProviderStateMixin {
   var activeTabBarIndex = 0;
   var loadingStatus = 'nomal';
   BaseStore baseStore = BaseStore();
+  OverlayEntry _overlayEntry;
+  GlobalKey _keyGreen = GlobalKey();
 
   @override
   void initState() {
@@ -255,6 +257,65 @@ class _Home extends State<Home> with SingleTickerProviderStateMixin {
     });
   }
 
+  void cancelOverlay() {
+    _overlayEntry.remove();
+  }
+
+  void showPopup() {
+    _overlayEntry = _createOverlayEntry();
+    Overlay.of(context).insert(_overlayEntry);
+  }
+
+  OverlayEntry _createOverlayEntry() {
+    RenderBox renderBox = _keyGreen.currentContext.findRenderObject();
+    var size = renderBox.size;
+    var offset = renderBox.localToGlobal(Offset.zero);
+    print('获取位置,$size,$offset');
+
+    return OverlayEntry(
+        builder: (context) => Positioned(
+              left: offset.dx,
+              top: offset.dy + size.height + 10,
+              width: 70,
+              child: Material(
+                elevation: 4.0,
+                child: ListView(
+                  padding: EdgeInsets.zero,
+                  shrinkWrap: true,
+                  children: <Widget>[
+                    ListTile(
+                        title: GestureDetector(
+                      onTap: cancelOverlay,
+                      child: Text('首页',
+                          style: TextStyle(
+                              color: Color(0xff007fff), fontSize: 12)),
+                    )),
+                    ListTile(
+                      title: GestureDetector(
+                          onTap: cancelOverlay,
+                          child: Text('沸点',
+                              style: TextStyle(
+                                  color: Color(0xff71777c), fontSize: 12))),
+                    ),
+                    ListTile(
+                      title: GestureDetector(
+                          onTap: cancelOverlay,
+                          child: Text('小册',
+                              style: TextStyle(
+                                  color: Color(0xff71777c), fontSize: 12))),
+                    ),
+                    ListTile(
+                        title: GestureDetector(
+                            onTap: cancelOverlay,
+                            child: Text('活动',
+                                style: TextStyle(
+                                    color: Color(0xff71777c), fontSize: 12))))
+                  ],
+                ),
+              ),
+            ));
+  }
+
 //当整个页面dispose时，记得把控制器也dispose掉，释放内存
   @override
   void dispose() {
@@ -265,88 +326,96 @@ class _Home extends State<Home> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-        length: this.nav.length,
-        initialIndex: initialIndex,
-        child: Scaffold(
-          appBar: AppBar(
-              title: Container(
-                  height: 60.0,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround, //水平居中对齐
-                    children: <Widget>[
-                      Text(
-                        '首页',
-                        style:
-                            TextStyle(color: Color(0xff007fff), fontSize: 16),
-                      ),
-                      Container(
-                          width: 122.0,
-                          child: TextField(
-                            decoration: InputDecoration(
-                              isCollapsed: true,
-                              fillColor:
-                                  Color(0xfffafafb), //背景颜色，必须结合filled: true,才有效
-                              filled: true,
-                              labelText: '搜索',
-                              labelStyle: TextStyle(
-                                  fontSize: 10.0, color: Color(0xff666666)),
-                              contentPadding: const EdgeInsets.symmetric(
-                                  vertical: 8.0, horizontal: 8.0),
-
-                              enabledBorder: OutlineInputBorder(
-                                /*边角*/
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(10.0), //边角为30
-                                ),
-                                borderSide: BorderSide(
-                                  color: Color(0xffE6E6E7), //边线颜色为黄色
-                                  width: 1, //边线宽度为2
-                                ),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                color: Colors.green, //边框颜色为绿色
-                                width: 1, //宽度为5
+    return Listener(
+        onPointerDown: (e) {
+          cancelOverlay();
+        },
+        child: DefaultTabController(
+            length: this.nav.length,
+            initialIndex: initialIndex,
+            child: Scaffold(
+              appBar: AppBar(
+                  title: Container(
+                      height: 60.0,
+                      child: Row(
+                        mainAxisAlignment:
+                            MainAxisAlignment.spaceAround, //水平居中对齐
+                        children: <Widget>[
+                          GestureDetector(
+                              key: _keyGreen,
+                              onTap: showPopup,
+                              child: Text(
+                                '首页',
+                                style: TextStyle(
+                                    color: Color(0xff007fff), fontSize: 16),
                               )),
-                            ),
-                          )),
-                      Icon(
-                        Icons.notifications,
-                        size: 30,
-                        color: Color(0xff71777c),
-                        textDirection: TextDirection.ltr,
+                          Container(
+                              width: 122.0,
+                              child: TextField(
+                                decoration: InputDecoration(
+                                  isCollapsed: true,
+                                  fillColor: Color(
+                                      0xfffafafb), //背景颜色，必须结合filled: true,才有效
+                                  filled: true,
+                                  labelText: '搜索',
+                                  labelStyle: TextStyle(
+                                      fontSize: 10.0, color: Color(0xff666666)),
+                                  contentPadding: const EdgeInsets.symmetric(
+                                      vertical: 8.0, horizontal: 8.0),
+
+                                  enabledBorder: OutlineInputBorder(
+                                    /*边角*/
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(10.0), //边角为30
+                                    ),
+                                    borderSide: BorderSide(
+                                      color: Color(0xffE6E6E7), //边线颜色为黄色
+                                      width: 1, //边线宽度为2
+                                    ),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                    color: Colors.green, //边框颜色为绿色
+                                    width: 1, //宽度为5
+                                  )),
+                                ),
+                              )),
+                          Icon(
+                            Icons.notifications,
+                            size: 30,
+                            color: Color(0xff71777c),
+                            textDirection: TextDirection.ltr,
+                          ),
+                          Image(
+                              width: 30,
+                              height: 30,
+                              image: NetworkImage(
+                                  "https://sf3-ttcdn-tos.pstatp.com/img/mosaic-legacy/3796/2975850990~300x300.image"))
+                        ],
                       ),
-                      Image(
-                          width: 30,
-                          height: 30,
-                          image: NetworkImage(
-                              "https://sf3-ttcdn-tos.pstatp.com/img/mosaic-legacy/3796/2975850990~300x300.image"))
-                    ],
-                  ),
-                  decoration: BoxDecoration(
-                      border: Border(
-                          bottom: BorderSide(color: Color(0xfff1f1f1))))),
-              centerTitle: true,
-              bottom: TabBar(
-                unselectedLabelColor: Color(0xff909090),
-                labelColor: Color(0xff007fff),
-                isScrollable: true,
-                tabs: this.nav,
-                onTap: (int index) {
-                  print('点击的tabar${index}');
-                  activeTabBarIndex = index;
-                  setState(() {
-                    detailList = [];
-                  });
-                  getData();
-                },
-              )),
-          body: PublicLoading(
-              loadingStatus: loadingStatus,
-              children: TabBarView(
-                children: tabBarViewItem(),
-              )),
-        ));
+                      decoration: BoxDecoration(
+                          border: Border(
+                              bottom: BorderSide(color: Color(0xfff1f1f1))))),
+                  centerTitle: true,
+                  bottom: TabBar(
+                    unselectedLabelColor: Color(0xff909090),
+                    labelColor: Color(0xff007fff),
+                    isScrollable: true,
+                    tabs: this.nav,
+                    onTap: (int index) {
+                      print('点击的tabar${index}');
+                      activeTabBarIndex = index;
+                      setState(() {
+                        detailList = [];
+                      });
+                      getData();
+                    },
+                  )),
+              body: PublicLoading(
+                  loadingStatus: loadingStatus,
+                  children: TabBarView(
+                    children: tabBarViewItem(),
+                  )),
+            )));
   }
 }

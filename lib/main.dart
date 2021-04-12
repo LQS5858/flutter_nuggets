@@ -9,6 +9,7 @@ import 'package:flutter_nuggets/pages/home/home.dart';
 import 'package:flutter_nuggets/pages/demo/demo.dart';
 import 'package:flutter_nuggets/pages/demo/mobx.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import './pages/demo/websocket.dart';
 
 void main() {
   // 修改系统栏颜色

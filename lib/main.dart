@@ -37,7 +37,7 @@ class MyApp extends StatelessWidget {
           primaryColor: Color(0xffffffff),
           accentColor: Color(0xffffffff),
           scaffoldBackgroundColor: Color(0xffffffff)),
-      home: Home(),
+      home: SocketDemo(),
       onGenerateRoute: $Router.router.generator,
       builder: EasyLoading.init(),
     );

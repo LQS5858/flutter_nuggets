@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../utils/websocket.dart';
-import 'dart:convert' as convert;
+import 'dart:convert';
+import 'dart:typed_data';
+import '../../utils/toArrayBuffer.dart';
 
 class SocketDemo extends StatefulWidget {
   @override
@@ -17,7 +19,7 @@ class _SocketDemo extends State<SocketDemo> {
     ws.subscribe(str);
     print('打印发送参数,${str}');
     ws.onMessage((res) {
-      print('订阅返回信息,${res}');
+      print('订阅信息>>,${res}');
     });
   }
 

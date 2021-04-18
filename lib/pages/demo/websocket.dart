@@ -1,8 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import '../../utils/websocket.dart';
 import 'dart:convert';
 import 'dart:typed_data';
-import '../../utils/toArrayBuffer.dart';
 
 class SocketDemo extends StatefulWidget {
   @override
@@ -20,6 +21,12 @@ class _SocketDemo extends State<SocketDemo> {
     print('打印发送参数,${str}');
     ws.onMessage((res) {
       print('订阅信息>>,${res}');
+      if (res is Uint8List) {
+        var zipData = GZipCodec().decode(res);
+        String result = utf8.decode(zipData, allowMalformed: true);
+        var data = json.decode(result);
+        print('订阅信息>>2,$result ');
+      }
     });
   }
 
